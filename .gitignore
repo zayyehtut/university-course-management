@@ -28,3 +28,6 @@ target/
 .vscode/
 ### Mac OS ###
 .DS_Store
+.repopackignore
+repopack-output.txt
+repopack.config.json
