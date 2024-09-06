@@ -6,21 +6,23 @@ This project is a microservices-based implementation of a University Course Mana
 
 Each service follows a layered architecture:
 
-- `api`: Controllers for handling HTTP requests
+- `api`: Controllers for handling HTTP requests and Data Transfer Objects (DTOs)
 - `service`: Business logic implementation
 - `domain`: Domain models and repository interfaces
 - `infrastructure`: Data persistence and external service integrations
-
+- `exception`: Contains custom exception classes for handling errors and providing meaningful feedback.
 
 ```
 service-name/
 ├── api/
 │   └── controllers/
+│   └── dto/
 ├── service/
 │   └── impl/
 ├── domain/
 │   ├── model/
 │   └── repository/
+└── exception/
 └── infrastructure/
     ├── persistence/
     └── external/
@@ -30,6 +32,14 @@ service-name/
 - `course-service`: Handles course and professor data
 - `enrollment-service`: Manages student enrollments and grades
 - `common`: Shared utilities and models
+
+## Technologies Used
+
+- Java 21
+- Spring Boot 3.2.0
+- Spring Data JPA
+- H2 Database (in-memory for development/testing)
+- Maven 3.8+
 
 ## Prerequisites
 
