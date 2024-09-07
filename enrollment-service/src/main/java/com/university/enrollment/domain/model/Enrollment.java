@@ -20,11 +20,20 @@ public class Enrollment {
     private String courseId;
 
     @Column(nullable = false)
+    private String courseName;
+
+    @Column(nullable = false)
     private LocalDate enrollmentDate;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EnrollmentStatus status;
+
+    @Column
+    private String grade;
+
+    @Column(nullable = false)
+    private String semester;
 
     @OneToMany(mappedBy = "enrollment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Grade> grades = new ArrayList<>();
@@ -37,11 +46,13 @@ public class Enrollment {
     public Enrollment() {
     }
 
-    public Enrollment(String studentId, String courseId, LocalDate enrollmentDate, EnrollmentStatus status) {
+    public Enrollment(String studentId, String courseId, String courseName, LocalDate enrollmentDate, EnrollmentStatus status, String semester) {
         this.studentId = studentId;
         this.courseId = courseId;
+        this.courseName = courseName;
         this.enrollmentDate = enrollmentDate;
         this.status = status;
+        this.semester = semester;
     }
 
     // Getters and Setters
@@ -102,5 +113,40 @@ public class Enrollment {
         grades.remove(grade);
         grade.setEnrollment(null);
     }
+
+    public String getGrade() {
+        return grade;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
+    public String getSemester() {
+        return semester;
+    }
+
+    public void setSemester(String semester) {
+        this.semester = semester;
+    }
+
+    @Override
+    public String toString() {
+        return "Enrollment{" +
+                "id='" + id + '\'' +
+                ", studentId='" + studentId + '\'' +
+                ", courseId='" + courseId + '\'' +
+                ", courseName='" + courseName + '\'' +
+                ", enrollmentDate=" + enrollmentDate +
+                ", status=" + status +
+                ", semester='" + semester + '\'' +
+                '}';
+    }
+
+
 
 }

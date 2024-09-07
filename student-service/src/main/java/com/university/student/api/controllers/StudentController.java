@@ -4,9 +4,8 @@ import com.university.student.service.StudentService;
 
 import jakarta.validation.Valid;
 
-import com.university.student.api.dto.StudentDTO;
-import com.university.student.api.dto.CreateStudentRequest;
-import com.university.student.api.dto.UpdateStudentRequest;
+import com.university.student.api.dto.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +46,11 @@ public class StudentController {
         return ResponseEntity.ok(students);
     }
 
+    @GetMapping("/{id}/academic-record")
+    public ResponseEntity<AcademicRecordDTO> getAcademicRecord(@PathVariable String id) {
+        AcademicRecordDTO academicRecord = studentService.getAcademicRecord(id);
+        return ResponseEntity.ok(academicRecord);
+    }
     @PutMapping("/{id}")
     public ResponseEntity<StudentDTO> updateStudent(@PathVariable String id, @Valid @RequestBody UpdateStudentRequest request) {
         StudentDTO updatedStudent = studentService.updateStudent(id, request);

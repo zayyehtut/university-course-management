@@ -337,7 +337,7 @@ void getGradesByEnrollmentId_ReturnsListOfGradeDTOs() {
     grade2.setLetterGrade("B");
     grade2.setNumericGrade(3.0f);
 
-    when(gradeRepository.findByEnrollmentId(enrollmentId)).thenReturn(Arrays.asList(grade1, grade2));
+    when(gradeRepository.findByEnrollment_Id(enrollmentId)).thenReturn(Arrays.asList(grade1, grade2));
 
     List<GradeDTO> result = enrollmentService.getGradesByEnrollmentId(enrollmentId);
 
@@ -355,7 +355,7 @@ void getGradesByEnrollmentId_ReturnsListOfGradeDTOs() {
     assertEquals("B", result.get(1).getLetterGrade());
     assertEquals(3.0f, result.get(1).getNumericGrade());
 
-    verify(gradeRepository).findByEnrollmentId(enrollmentId);
+    verify(gradeRepository).findByEnrollment_Id(enrollmentId);
 }
 
 }

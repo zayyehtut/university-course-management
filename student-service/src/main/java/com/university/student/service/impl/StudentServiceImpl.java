@@ -1,21 +1,24 @@
 package com.university.student.service.impl;
 
 import com.university.student.service.StudentService;
-import com.university.student.api.dto.StudentDTO;
-import com.university.student.api.dto.CreateStudentRequest;
-import com.university.student.api.dto.UpdateStudentRequest;
+import com.university.student.api.dto.*;
+import com.university.common.dto.EnrollmentDTO;
 import com.university.student.domain.model.Student;
 import com.university.student.domain.model.StudentProfile;
 import com.university.student.domain.repository.StudentRepository;
 import com.university.student.exception.StudentNotFoundException;
 import com.university.student.exception.ValidationException;
 import com.university.student.exception.DuplicateEmailException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,10 +26,13 @@ import java.util.stream.Collectors;
 public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
+    private final RestTemplate restTemplate;
+
 
     @Autowired
-    public StudentServiceImpl(StudentRepository studentRepository) {
+    public StudentServiceImpl(StudentRepository studentRepository, RestTemplate restTemplate) {
         this.studentRepository = studentRepository;
+        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -160,6 +166,65 @@ public class StudentServiceImpl implements StudentService {
         if (!errors.isEmpty()) {
             throw new ValidationException(String.join(", ", errors));
         }
+    }
+
+    @Override
+public AcademicRecordDTO getAcademicRecord(String studentId) {
+    Student student = studentRepository.findById(studentId)
+            .orElseThrow(() -> new StudentNotFoundException(studentId));
+    
+    List<AcademicRecordDTO.EnrollmentRecordDTO> enrollments = fetchEnrollmentRecords(studentId);
+    double gpa = calculateGPA(enrollments);
+
+    return new AcademicRecordDTO(student.getId(), student.getName(), enrollments, gpa);
+}
+
+    
+
+private List<AcademicRecordDTO.EnrollmentRecordDTO> fetchEnrollmentRecords(String studentId) {
+    String enrollmentServiceUrl = "http://localhost:8082/api/enrollments/student/" + studentId;
+    try {
+        EnrollmentDTO[] enrollments = restTemplate.getForObject(enrollmentServiceUrl, EnrollmentDTO[].class);
+        if (enrollments != null) {
+            return Arrays.stream(enrollments)
+                    .map(this::convertToEnrollmentRecordDTO)
+                    .collect(Collectors.toList());
+        }
+    } catch (Exception e) {
+        // Log the error
+    }
+    return Collections.emptyList();
+}
+
+private AcademicRecordDTO.EnrollmentRecordDTO convertToEnrollmentRecordDTO(EnrollmentDTO enrollmentDTO) {
+    return new AcademicRecordDTO.EnrollmentRecordDTO(
+        enrollmentDTO.getCourseId(),
+        enrollmentDTO.getCourseName(),
+        enrollmentDTO.getGrade(),
+        enrollmentDTO.getSemester()
+    );
+}
+
+
+    private double calculateGPA(List<AcademicRecordDTO.EnrollmentRecordDTO> enrollments) {
+        if (enrollments.isEmpty()) {
+            return 0.0;
+        }
+        double totalGradePoints = enrollments.stream()
+                .mapToDouble(e -> convertGradeToPoints(e.getGrade()))
+                .sum();
+        return totalGradePoints / enrollments.size();
+    }
+
+    private double convertGradeToPoints(String grade) {
+        switch (grade.toUpperCase()) {
+            case "A": return 4.0;
+            case "B": return 3.0;
+            case "C": return 2.0;
+            case "D": return 1.0;
+            default: return 0.0;
+        }
+
     }
 
     private StudentDTO convertToDTO(Student student) {

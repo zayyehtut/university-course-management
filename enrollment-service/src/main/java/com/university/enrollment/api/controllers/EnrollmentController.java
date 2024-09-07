@@ -76,4 +76,12 @@ public class EnrollmentController {
         List<GradeDTO> grades = enrollmentService.getGradesByEnrollmentId(enrollmentId);
         return ResponseEntity.ok(grades);
     }
+
+    @GetMapping("/student/{studentId}")
+    public ResponseEntity<List<EnrollmentDTO>> getEnrollmentsByStudentId(@PathVariable String studentId) {
+        List<EnrollmentDTO> enrollments = enrollmentService.getEnrollmentsByStudentId(studentId);
+        return ResponseEntity.ok(enrollments);
+    }
+
+
 }

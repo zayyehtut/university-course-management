@@ -3,6 +3,8 @@ package com.university.enrollment.api.dto;
 public class CreateEnrollmentRequest {
     private String studentId;
     private String courseId;
+    private String courseName;
+    private String semester;
 
     public CreateEnrollmentRequest() {
         // Default constructor
@@ -27,5 +29,21 @@ public class CreateEnrollmentRequest {
 
     public void setCourseId(String courseId) {
         this.courseId = courseId;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
+    public String getSemester() {
+        return semester;
+    }
+
+    public void setSemester(String semester) {
+        this.semester = semester;
     }
 }

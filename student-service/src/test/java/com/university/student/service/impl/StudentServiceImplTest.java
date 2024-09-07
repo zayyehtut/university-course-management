@@ -1,5 +1,6 @@
 package com.university.student.service.impl;
 
+import com.university.student.api.dto.AcademicRecordDTO;
 import com.university.student.api.dto.CreateStudentRequest;
 import com.university.student.api.dto.StudentDTO;
 import com.university.student.api.dto.UpdateStudentRequest;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -23,6 +25,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 class StudentServiceImplTest {
@@ -32,6 +35,9 @@ class StudentServiceImplTest {
 
     @InjectMocks
     private StudentServiceImpl studentService;
+
+     @Mock
+    private RestTemplate restTemplate;
 
     @BeforeEach
     void setUp() {
@@ -228,5 +234,127 @@ void updateStudent_InvalidRequest_ThrowsValidationException() {
 
         verify(studentRepository).existsById(id);
         verify(studentRepository, never()).deleteById(any());
+    }
+
+     @Test
+    void getAcademicRecord_ExistingStudentWithEnrollments_ReturnsAcademicRecord() {
+        // Arrange
+        String studentId = "student1";
+        Student student = new Student();
+        student.setId(studentId);
+        
+        when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
+        
+        AcademicRecordDTO.EnrollmentRecordDTO[] enrollments = {
+            new AcademicRecordDTO.EnrollmentRecordDTO("course1", "Math", "A", "Fall 2023"),
+            new AcademicRecordDTO.EnrollmentRecordDTO("course2", "Physics", "B", "Fall 2023")
+        };
+        
+        when(restTemplate.getForObject(anyString(), eq(AcademicRecordDTO.EnrollmentRecordDTO[].class)))
+            .thenReturn(enrollments);
+
+        // Act
+        AcademicRecordDTO result = studentService.getAcademicRecord(studentId);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(studentId, result.getStudentId());
+        assertEquals(2, result.getEnrollments().size());
+        assertEquals(3.5, result.getGpa(), 0.01); // Assuming A=4.0 and B=3.0
+
+        verify(studentRepository).findById(studentId);
+        verify(restTemplate).getForObject(anyString(), eq(AcademicRecordDTO.EnrollmentRecordDTO[].class));
+    }
+
+    @Test
+    void getAcademicRecord_ExistingStudentNoEnrollments_ReturnsEmptyAcademicRecord() {
+        // Arrange
+        String studentId = "student2";
+        Student student = new Student();
+        student.setId(studentId);
+        
+        when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
+        when(restTemplate.getForObject(anyString(), eq(AcademicRecordDTO.EnrollmentRecordDTO[].class)))
+            .thenReturn(new AcademicRecordDTO.EnrollmentRecordDTO[0]);
+
+        // Act
+        AcademicRecordDTO result = studentService.getAcademicRecord(studentId);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(studentId, result.getStudentId());
+        assertTrue(result.getEnrollments().isEmpty());
+        assertEquals(0.0, result.getGpa(), 0.01);
+
+        verify(studentRepository).findById(studentId);
+        verify(restTemplate).getForObject(anyString(), eq(AcademicRecordDTO.EnrollmentRecordDTO[].class));
+    }
+
+    @Test
+    void getAcademicRecord_NonExistingStudent_ThrowsStudentNotFoundException() {
+        // Arrange
+        String studentId = "nonexistent";
+        when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(StudentNotFoundException.class, () -> studentService.getAcademicRecord(studentId));
+        verify(studentRepository).findById(studentId);
+        verifyNoInteractions(restTemplate);
+    }
+
+    @Test
+    void getAcademicRecord_NullEnrollmentsFromRestTemplate_ReturnsEmptyAcademicRecord() {
+        // Arrange
+        String studentId = "student3";
+        Student student = new Student();
+        student.setId(studentId);
+        
+        when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
+        when(restTemplate.getForObject(anyString(), eq(AcademicRecordDTO.EnrollmentRecordDTO[].class)))
+            .thenReturn(null);
+
+        // Act
+        AcademicRecordDTO result = studentService.getAcademicRecord(studentId);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(studentId, result.getStudentId());
+        assertTrue(result.getEnrollments().isEmpty());
+        assertEquals(0.0, result.getGpa(), 0.01);
+
+        verify(studentRepository).findById(studentId);
+        verify(restTemplate).getForObject(anyString(), eq(AcademicRecordDTO.EnrollmentRecordDTO[].class));
+    }
+
+    @Test
+    void getAcademicRecord_MixedGrades_CalculatesCorrectGPA() {
+        // Arrange
+        String studentId = "student4";
+        Student student = new Student();
+        student.setId(studentId);
+        
+        when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
+        
+        AcademicRecordDTO.EnrollmentRecordDTO[] enrollments = {
+            new AcademicRecordDTO.EnrollmentRecordDTO("course1", "Math", "A", "Fall 2023"),
+            new AcademicRecordDTO.EnrollmentRecordDTO("course2", "Physics", "B", "Fall 2023"),
+            new AcademicRecordDTO.EnrollmentRecordDTO("course3", "Chemistry", "C", "Fall 2023"),
+            new AcademicRecordDTO.EnrollmentRecordDTO("course4", "Biology", "D", "Fall 2023")
+        };
+        
+        when(restTemplate.getForObject(anyString(), eq(AcademicRecordDTO.EnrollmentRecordDTO[].class)))
+            .thenReturn(enrollments);
+
+        // Act
+        AcademicRecordDTO result = studentService.getAcademicRecord(studentId);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(studentId, result.getStudentId());
+        assertEquals(4, result.getEnrollments().size());
+        assertEquals(2.5, result.getGpa(), 0.01); // (4 + 3 + 2 + 1) / 4 = 2.5
+
+        verify(studentRepository).findById(studentId);
+        verify(restTemplate).getForObject(anyString(), eq(AcademicRecordDTO.EnrollmentRecordDTO[].class));
     }
 }

@@ -1,4 +1,4 @@
-package com.university.enrollment.api.dto;
+package com.university.common.dto;
 
 import java.time.LocalDate;
 

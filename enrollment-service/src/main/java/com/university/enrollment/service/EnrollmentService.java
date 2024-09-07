@@ -1,10 +1,6 @@
 package com.university.enrollment.service;
 
-import com.university.enrollment.api.dto.EnrollmentDTO;
-import com.university.enrollment.api.dto.GradeDTO;
-import com.university.enrollment.api.dto.CreateEnrollmentRequest;
-import com.university.enrollment.api.dto.UpdateGradeRequest;
-
+import com.university.enrollment.api.dto.*;
 import java.util.List;
 
 public interface EnrollmentService {
@@ -17,4 +13,5 @@ public interface EnrollmentService {
     GradeDTO updateGrade(String gradeId, UpdateGradeRequest request);
     GradeDTO getGradeById(String id);
     List<GradeDTO> getGradesByEnrollmentId(String enrollmentId);
+    List<EnrollmentDTO> getEnrollmentsByStudentId(String studentId);
 }

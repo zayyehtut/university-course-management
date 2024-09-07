@@ -2,6 +2,7 @@
 package com.university.enrollment.domain.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "grades")
@@ -21,13 +22,17 @@ public class Grade {
     @Column(nullable = false)
     private float numericGrade;
 
+    @Column(nullable = false)
+    private LocalDate dateRecorded;
+
     // Constructors
     public Grade() {}
 
-    public Grade(Enrollment enrollment, String letterGrade, float numericGrade) {
+    public Grade(Enrollment enrollment, String letterGrade, float numericGrade, LocalDate dateRecorded) {
         this.enrollment = enrollment;
         this.letterGrade = letterGrade;
         this.numericGrade = numericGrade;
+        this.dateRecorded = dateRecorded;
     }
 
     // Getters and setters
@@ -68,6 +73,16 @@ public class Grade {
         return enrollment != null ? enrollment.getId() : null;
     }
 
+    public LocalDate getDateRecorded() {
+        return dateRecorded;
+    }
+
+    public void setDateRecorded(LocalDate dateRecorded) {
+        this.dateRecorded = dateRecorded;
+    }
+
+
+
     @Override
     public String toString() {
         return "Grade{" +
@@ -75,6 +90,7 @@ public class Grade {
                 ", enrollmentId='" + getEnrollmentId() + '\'' +
                 ", letterGrade='" + letterGrade + '\'' +
                 ", numericGrade=" + numericGrade +
+                ", dateRecorded=" + dateRecorded +
                 '}';
     }
 }
