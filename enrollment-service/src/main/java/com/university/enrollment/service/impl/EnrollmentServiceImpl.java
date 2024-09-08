@@ -1,10 +1,12 @@
 package com.university.enrollment.service.impl;
 
 import com.university.common.exception.*;
+import com.university.common.util.ValidationUtils;
+
 import com.university.enrollment.exception.EnrollmentNotFoundException;
 import com.university.enrollment.exception.GradeNotFoundException;
 
-import com.university.enrollment.api.dto.EnrollmentDTO;
+import com.university.common.dto.EnrollmentDTO;
 import com.university.enrollment.api.dto.GradeDTO;
 import com.university.enrollment.api.dto.CreateEnrollmentRequest;
 import com.university.enrollment.api.dto.UpdateGradeRequest;
@@ -142,18 +144,12 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     private void validateCreateEnrollmentRequest(CreateEnrollmentRequest request) {
-        if (request.getStudentId() == null || request.getStudentId().trim().isEmpty()) {
-            throw new ValidationException("Student ID is required");
-        }
-        if (request.getCourseId() == null || request.getCourseId().trim().isEmpty()) {
-            throw new ValidationException("Course ID is required");
-        }
+        ValidationUtils.validateNonEmptyString(request.getStudentId(), "Student ID");
+        ValidationUtils.validateNonEmptyString(request.getCourseId(), "Course ID");
     }
 
     private void validateGradeRequest(UpdateGradeRequest request) {
-        if (request.getLetterGrade() == null || request.getLetterGrade().trim().isEmpty()) {
-            throw new ValidationException("Letter grade is required");
-        }
+        ValidationUtils.validateNonEmptyString(request.getLetterGrade(), "Letter grade");
         if (request.getNumericGrade() < 0 || request.getNumericGrade() > 4.0) {
             throw new ValidationException("Numeric grade must be between 0 and 4.0");
         }

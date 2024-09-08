@@ -1,5 +1,6 @@
 package com.university.enrollment.service;
 
+import com.university.common.dto.EnrollmentDTO;
 import com.university.enrollment.api.dto.*;
 import java.util.List;
 

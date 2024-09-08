@@ -1,6 +1,8 @@
 package com.university.course.service.impl;
 
 import com.university.common.exception.*;
+import com.university.common.util.ValidationUtils;
+
 import com.university.course.exception.CourseNotFoundException;
 import com.university.course.exception.DuplicateCourseCodeException;
 import com.university.course.exception.ProfessorNotFoundException;
@@ -110,32 +112,24 @@ public class CourseServiceImpl implements CourseService {
     }
 
     private void validateCreateCourseRequest(CreateCourseRequest request) {
-        if (request.getCode() == null || request.getCode().trim().isEmpty()) {
-            throw new ValidationException("Course code is required");
-        }
-        if (request.getName() == null || request.getName().trim().isEmpty()) {
-            throw new ValidationException("Course name is required");
-        }
+        ValidationUtils.validateNonEmptyString(request.getCode(), "Course code");
+        ValidationUtils.validateNonEmptyString(request.getName(), "Course name");
         if (request.getCredits() <= 0) {
             throw new ValidationException("Credits must be a positive number");
         }
-        if (request.getType() == null || (!request.getType().equals("MANDATORY") && !request.getType().equals("ELECTIVE"))) {
-            throw new ValidationException("Type must be either MANDATORY or ELECTIVE");
-        }
-        if (request.getProfessorId() == null || request.getProfessorId().trim().isEmpty()) {
-            throw new ValidationException("Professor ID is required");
-        }
+        ValidationUtils.validateType(request.getType(), new String[]{"MANDATORY", "ELECTIVE"}, "Type");
+        ValidationUtils.validateNonEmptyString(request.getProfessorId(), "Professor ID");
     }
 
     private void validateUpdateCourseRequest(UpdateCourseRequest request) {
-        if (request.getName() != null && request.getName().trim().isEmpty()) {
-            throw new ValidationException("Course name cannot be empty");
+        if (request.getName() != null) {
+            ValidationUtils.validateNonEmptyString(request.getName(), "Course name");
         }
         if (request.getCredits() != null && request.getCredits() <= 0) {
             throw new ValidationException("Credits must be a positive number");
         }
-        if (request.getType() != null && (!request.getType().equals("MANDATORY") && !request.getType().equals("ELECTIVE"))) {
-            throw new ValidationException("Type must be either MANDATORY or ELECTIVE");
+        if (request.getType() != null) {
+            ValidationUtils.validateType(request.getType(), new String[]{"MANDATORY", "ELECTIVE"}, "Type");
         }
     }
 

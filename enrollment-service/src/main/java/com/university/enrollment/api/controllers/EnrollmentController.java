@@ -1,6 +1,6 @@
 package com.university.enrollment.api.controllers;
 
-import com.university.enrollment.api.dto.EnrollmentDTO;
+import com.university.common.dto.EnrollmentDTO;
 import com.university.enrollment.api.dto.GradeDTO;
 import com.university.enrollment.api.dto.CreateEnrollmentRequest;
 import com.university.enrollment.api.dto.UpdateGradeRequest;

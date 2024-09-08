@@ -1,6 +1,7 @@
 package com.university.student.service.impl;
 
 import com.university.common.exception.*;
+import com.university.common.util.ValidationUtils;
 
 import com.university.student.service.StudentService;
 import com.university.student.api.dto.*;
@@ -123,46 +124,34 @@ public class StudentServiceImpl implements StudentService {
     }
 
     private void validateCreateStudentRequest(CreateStudentRequest request) {
-        if (request.getName() == null || request.getName().trim().isEmpty()) {
-            throw new ValidationException("Name is required");
-        }
-        if (request.getEmail() == null || !request.getEmail().matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-            throw new ValidationException("Valid email is required");
-        }
-        if (request.getType() == null || (!request.getType().equals("UNDERGRADUATE") && !request.getType().equals("POSTGRADUATE"))) {
-            throw new ValidationException("Type must be either UNDERGRADUATE or POSTGRADUATE");
-        }
-        if (request.getAddress() == null || request.getAddress().trim().isEmpty()) {
-            throw new ValidationException("Address is required");
-        }
-        if (request.getPhoneNumber() == null || !request.getPhoneNumber().matches("\\d{10}")) {
-            throw new ValidationException("Phone number must be 10 digits");
-        }
-        if (request.getDateOfBirth() == null || request.getDateOfBirth().isAfter(LocalDate.now())) {
-            throw new ValidationException("Valid date of birth is required and must be in the past");
-        }
+        ValidationUtils.validateNonEmptyString(request.getName(), "Name");
+        ValidationUtils.validateEmail(request.getEmail());
+        ValidationUtils.validateType(request.getType(), new String[]{"UNDERGRADUATE", "POSTGRADUATE"}, "Type");
+        ValidationUtils.validateNonEmptyString(request.getAddress(), "Address");
+        ValidationUtils.validatePhoneNumber(request.getPhoneNumber());
+        ValidationUtils.validateDateInPast(request.getDateOfBirth(), "Date of birth");
     }
 
      private void validateUpdateStudentRequest(UpdateStudentRequest request) {
         List<String> errors = new ArrayList<>();
 
         if (request.getName() != null && request.getName().trim().isEmpty()) {
-            errors.add("Name cannot be empty");
+            ValidationUtils.validateNonEmptyString(request.getName(), "Name");
         }
         if (request.getEmail() != null && !request.getEmail().matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-            errors.add("Valid email is required");
+            ValidationUtils.validateEmail(request.getEmail());
         }
         if (request.getType() != null && (!request.getType().equals("UNDERGRADUATE") && !request.getType().equals("POSTGRADUATE"))) {
-            errors.add("Type must be either UNDERGRADUATE or POSTGRADUATE");
+            ValidationUtils.validateType(request.getType(), new String[]{"UNDERGRADUATE", "POSTGRADUATE"}, "Type");
         }
         if (request.getAddress() != null && request.getAddress().trim().isEmpty()) {
-            errors.add("Address cannot be empty");
+            ValidationUtils.validateNonEmptyString(request.getAddress(), "Address");
         }
         if (request.getPhoneNumber() != null && !request.getPhoneNumber().matches("\\d{10}")) {
-            errors.add("Phone number must be 10 digits");
+            ValidationUtils.validatePhoneNumber(request.getPhoneNumber());
         }
         if (request.getDateOfBirth() != null && request.getDateOfBirth().isAfter(LocalDate.now())) {
-            errors.add("Date of birth must be in the past");
+            ValidationUtils.validateDateInPast(request.getDateOfBirth(), "Date of birth");
         }
 
         if (!errors.isEmpty()) {
