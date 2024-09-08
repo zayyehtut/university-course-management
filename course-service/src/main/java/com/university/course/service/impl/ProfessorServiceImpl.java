@@ -1,12 +1,14 @@
 package com.university.course.service.impl;
 
+import com.university.common.exception.*;
+
+
 import com.university.course.api.dto.ProfessorDTO;
 import com.university.course.api.dto.CreateProfessorRequest;
 import com.university.course.api.dto.UpdateProfessorRequest;
 import com.university.course.domain.model.Professor;
 import com.university.course.domain.repository.ProfessorRepository;
 import com.university.course.exception.ProfessorNotFoundException;
-import com.university.course.exception.ValidationException;
 import com.university.course.service.ProfessorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

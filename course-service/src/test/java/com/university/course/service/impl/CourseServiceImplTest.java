@@ -1,4 +1,6 @@
 package com.university.course.service.impl;
+import com.university.common.exception.*;
+import com.university.course.exception.ProfessorNotFoundException;
 
 import com.university.course.api.dto.ProfessorDTO;
 import com.university.course.api.dto.CreateProfessorRequest;
@@ -6,8 +8,7 @@ import com.university.course.api.dto.UpdateProfessorRequest;
 import com.university.course.domain.model.Professor;
 import com.university.course.domain.model.Course;
 import com.university.course.domain.repository.ProfessorRepository;
-import com.university.course.exception.ProfessorNotFoundException;
-import com.university.course.exception.ValidationException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

@@ -1,5 +1,9 @@
 package com.university.enrollment.service.impl;
 
+import com.university.common.exception.ValidationException;
+import com.university.enrollment.exception.EnrollmentNotFoundException;
+import com.university.enrollment.exception.GradeNotFoundException;
+
 import com.university.enrollment.api.dto.CreateEnrollmentRequest;
 import com.university.enrollment.api.dto.EnrollmentDTO;
 import com.university.enrollment.api.dto.GradeDTO;
@@ -8,9 +12,8 @@ import com.university.enrollment.domain.model.Enrollment;
 import com.university.enrollment.domain.model.Grade;
 import com.university.enrollment.domain.repository.EnrollmentRepository;
 import com.university.enrollment.domain.repository.GradeRepository;
-import com.university.enrollment.exception.EnrollmentNotFoundException;
-import com.university.enrollment.exception.GradeNotFoundException;
-import com.university.enrollment.exception.ValidationException;
+
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

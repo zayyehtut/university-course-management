@@ -1,5 +1,9 @@
 package com.university.enrollment.service.impl;
 
+import com.university.common.exception.*;
+import com.university.enrollment.exception.EnrollmentNotFoundException;
+import com.university.enrollment.exception.GradeNotFoundException;
+
 import com.university.enrollment.api.dto.EnrollmentDTO;
 import com.university.enrollment.api.dto.GradeDTO;
 import com.university.enrollment.api.dto.CreateEnrollmentRequest;
@@ -9,9 +13,7 @@ import com.university.enrollment.domain.model.Grade;
 import com.university.enrollment.domain.repository.EnrollmentRepository;
 import com.university.enrollment.domain.repository.GradeRepository;
 import com.university.enrollment.service.EnrollmentService;
-import com.university.enrollment.exception.EnrollmentNotFoundException;
-import com.university.enrollment.exception.GradeNotFoundException;
-import com.university.enrollment.exception.ValidationException;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

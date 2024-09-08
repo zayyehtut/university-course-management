@@ -1,17 +1,22 @@
 package com.university.course.service.impl;
 
-import com.university.course.api.dto.CourseDTO;
-import com.university.course.api.dto.CreateCourseRequest;
-import com.university.course.api.dto.UpdateCourseRequest;
-import com.university.course.domain.model.Course;
-import com.university.course.domain.model.Professor;
-import com.university.course.domain.repository.CourseRepository;
-import com.university.course.domain.repository.ProfessorRepository;
+import com.university.common.exception.*;
 import com.university.course.exception.CourseNotFoundException;
 import com.university.course.exception.DuplicateCourseCodeException;
 import com.university.course.exception.ProfessorNotFoundException;
-import com.university.course.exception.ValidationException;
+
+import com.university.course.api.dto.CourseDTO;
+import com.university.course.api.dto.CreateCourseRequest;
+import com.university.course.api.dto.UpdateCourseRequest;
+
+import com.university.course.domain.model.Course;
+import com.university.course.domain.model.Professor;
+
+import com.university.course.domain.repository.CourseRepository;
+import com.university.course.domain.repository.ProfessorRepository;
+
 import com.university.course.service.CourseService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

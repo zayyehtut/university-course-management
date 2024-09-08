@@ -1,5 +1,7 @@
 package com.university.student.service.impl;
 
+import com.university.common.exception.*;
+
 import com.university.student.service.StudentService;
 import com.university.student.api.dto.*;
 import com.university.common.dto.EnrollmentDTO;
@@ -7,7 +9,7 @@ import com.university.student.domain.model.Student;
 import com.university.student.domain.model.StudentProfile;
 import com.university.student.domain.repository.StudentRepository;
 import com.university.student.exception.StudentNotFoundException;
-import com.university.student.exception.ValidationException;
+
 import com.university.student.exception.DuplicateEmailException;
 
 import org.springframework.beans.factory.annotation.Autowired;

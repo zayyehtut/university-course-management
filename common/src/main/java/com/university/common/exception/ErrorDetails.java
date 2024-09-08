@@ -1,4 +1,4 @@
-package com.university.student.exception;
+package com.university.common.exception;
 
 import java.time.LocalDateTime;
 

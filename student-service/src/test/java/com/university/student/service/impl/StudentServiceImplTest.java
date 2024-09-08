@@ -1,5 +1,7 @@
 package com.university.student.service.impl;
 
+import com.university.common.exception.*;
+
 import com.university.student.api.dto.AcademicRecordDTO;
 import com.university.student.api.dto.CreateStudentRequest;
 import com.university.student.api.dto.StudentDTO;
@@ -9,7 +11,7 @@ import com.university.student.domain.model.StudentProfile;
 import com.university.student.domain.repository.StudentRepository;
 import com.university.student.exception.DuplicateEmailException;
 import com.university.student.exception.StudentNotFoundException;
-import com.university.student.exception.ValidationException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
