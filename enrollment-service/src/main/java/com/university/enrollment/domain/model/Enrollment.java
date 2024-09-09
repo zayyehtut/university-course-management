@@ -96,6 +96,11 @@ public class Enrollment {
         this.status = status;
     }
 
+
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
     public List<Grade> getGrades() {
         return grades;
     }

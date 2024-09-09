@@ -187,12 +187,12 @@ public StudentDTO updateStudent(String id, UpdateStudentRequest request) {
     }
 
     private AcademicRecordDTO.EnrollmentRecordDTO convertToEnrollmentRecordDTO(EnrollmentDTO enrollmentDTO) {
-        return new AcademicRecordDTO.EnrollmentRecordDTO(
-                enrollmentDTO.getCourseId(),
-                enrollmentDTO.getCourseName(),
-                enrollmentDTO.getGrade(),
-                enrollmentDTO.getSemester()
-        );
+        AcademicRecordDTO.EnrollmentRecordDTO recordDTO = new AcademicRecordDTO.EnrollmentRecordDTO();
+        recordDTO.setCourseId(enrollmentDTO.getCourseId());
+        recordDTO.setCourseName(enrollmentDTO.getCourseName());
+        recordDTO.setGrade(enrollmentDTO.getGrade());
+        recordDTO.setSemester(enrollmentDTO.getSemester());
+        return recordDTO;
     }
 
     private double calculateGPA(List<AcademicRecordDTO.EnrollmentRecordDTO> enrollments) {
@@ -200,9 +200,13 @@ public StudentDTO updateStudent(String id, UpdateStudentRequest request) {
             return 0.0;
         }
         double totalGradePoints = enrollments.stream()
+                .filter(e -> e.getGrade() != null && !e.getGrade().isEmpty())
                 .mapToDouble(e -> convertGradeToPoints(e.getGrade()))
                 .sum();
-        return totalGradePoints / enrollments.size();
+        long validGradeCount = enrollments.stream()
+                .filter(e -> e.getGrade() != null && !e.getGrade().isEmpty())
+                .count();
+        return validGradeCount > 0 ? totalGradePoints / validGradeCount : 0.0;
     }
 
     private double convertGradeToPoints(String grade) {

@@ -24,8 +24,6 @@ import com.university.enrollment.service.EnrollmentService;
 
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.Converter;
-import org.modelmapper.spi.MappingContext;
 import org.modelmapper.TypeMap;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,10 +94,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             mapper.map(Enrollment::getEnrollmentDate, EnrollmentDTO::setEnrollmentDate);
             mapper.map(Enrollment::getSemester, EnrollmentDTO::setSemester);
             mapper.map(src -> src.getStatus() != null ? src.getStatus().name() : null, EnrollmentDTO::setStatus);
-            mapper.map(src -> src.getGrades() != null ? src.getGrades().stream()
-                .max(Comparator.comparing(Grade::getDateRecorded))
-                .map(Grade::getLetterGrade)
-                .orElse(null) : null, EnrollmentDTO::setGrade);
+            mapper.map(Enrollment::getGrade, EnrollmentDTO::setGrade);
         });
 
         // Grade to GradeDTO mapping
@@ -132,7 +127,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         Enrollment enrollment = modelMapper.map(request, Enrollment.class);
         enrollment.setEnrollmentDate(LocalDate.now());
         enrollment.setStatus(Enrollment.EnrollmentStatus.ACTIVE);
-        
+
         Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
         return modelMapper.map(savedEnrollment, EnrollmentDTO.class);
     }
@@ -191,6 +186,11 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         grade.setDateRecorded(LocalDate.now());
 
         Grade savedGrade = gradeRepository.save(grade);
+
+        // Update the enrollment's grade
+        enrollment.setGrade(savedGrade.getLetterGrade());
+        enrollmentRepository.save(enrollment);
+
         return modelMapper.map(savedGrade, GradeDTO.class);
     }
 
@@ -205,6 +205,13 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         modelMapper.map(request, grade);
 
         Grade updatedGrade = gradeRepository.save(grade);
+
+        // Update the associated enrollment's grade
+        Enrollment enrollment = updatedGrade.getEnrollment();
+        enrollment.setGrade(updatedGrade.getLetterGrade());
+        enrollmentRepository.save(enrollment);
+
+        
         return modelMapper.map(updatedGrade, GradeDTO.class);
     }
 
