@@ -10,9 +10,10 @@ import com.university.student.domain.model.Student;
 import com.university.student.domain.model.StudentProfile;
 import com.university.student.domain.repository.StudentRepository;
 import com.university.student.exception.StudentNotFoundException;
-
 import com.university.student.exception.DuplicateEmailException;
 
+import org.modelmapper.Conditions;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -30,12 +31,30 @@ public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
     private final RestTemplate restTemplate;
-
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public StudentServiceImpl(StudentRepository studentRepository, RestTemplate restTemplate) {
+    public StudentServiceImpl(StudentRepository studentRepository, RestTemplate restTemplate, ModelMapper modelMapper) {
         this.studentRepository = studentRepository;
         this.restTemplate = restTemplate;
+        this.modelMapper = modelMapper;
+        configureModelMapper();
+
+    }
+
+    private void configureModelMapper() {
+        modelMapper.createTypeMap(CreateStudentRequest.class, Student.class)
+            .addMappings(mapper -> {
+                mapper.skip(Student::setId);
+                mapper.map(src -> src.getType() != null ? Student.StudentType.valueOf(src.getType().toUpperCase()) : null, Student::setType);
+            });
+
+        modelMapper.createTypeMap(Student.class, StudentDTO.class)
+            .addMappings(mapper -> {
+                mapper.map(src -> src.getProfile().getAddress(), StudentDTO::setAddress);
+                mapper.map(src -> src.getProfile().getPhoneNumber(), StudentDTO::setPhoneNumber);
+                mapper.map(src -> src.getProfile().getDateOfBirth(), StudentDTO::setDateOfBirth);
+            });
     }
 
     @Override
@@ -47,72 +66,54 @@ public class StudentServiceImpl implements StudentService {
             throw new DuplicateEmailException(request.getEmail());
         }
 
-        Student student = new Student();
-        student.setName(request.getName());
-        student.setEmail(request.getEmail());
-        student.setType(Student.StudentType.valueOf(request.getType()));
-
-        StudentProfile profile = new StudentProfile();
-        profile.setAddress(request.getAddress());
-        profile.setPhoneNumber(request.getPhoneNumber());
-        profile.setDateOfBirth(request.getDateOfBirth());
+        Student student = modelMapper.map(request, Student.class);
+        StudentProfile profile = modelMapper.map(request, StudentProfile.class);
 
         student.setProfile(profile);
+        profile.setStudent(student);
 
         Student savedStudent = studentRepository.save(student);
-        return convertToDTO(savedStudent);
+        return modelMapper.map(savedStudent, StudentDTO.class);
     }
 
     @Override
     public StudentDTO getStudentById(String id) {
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new StudentNotFoundException(id));
-        return convertToDTO(student);
+        return modelMapper.map(student, StudentDTO.class);
     }
 
     @Override
     public List<StudentDTO> getAllStudents() {
         return studentRepository.findAll().stream()
-                .map(this::convertToDTO)
+                .map(student -> modelMapper.map(student, StudentDTO.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    @Transactional
-    public StudentDTO updateStudent(String id, UpdateStudentRequest request) {
-        validateUpdateStudentRequest(request);
+@Transactional
+public StudentDTO updateStudent(String id, UpdateStudentRequest request) {
+    validateUpdateStudentRequest(request);
 
-        Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new StudentNotFoundException(id));
+    Student student = studentRepository.findById(id)
+            .orElseThrow(() -> new StudentNotFoundException(id));
 
-        if (request.getEmail() != null && !request.getEmail().equals(student.getEmail())) {
-            if (studentRepository.findByEmail(request.getEmail()).isPresent()) {
-                throw new DuplicateEmailException(request.getEmail());
-            }
-            student.setEmail(request.getEmail());
+    if (request.getEmail() != null && !request.getEmail().equals(student.getEmail())) {
+        if (studentRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new DuplicateEmailException(request.getEmail());
         }
-
-        if (request.getName() != null) {
-            student.setName(request.getName());
-        }
-        if (request.getType() != null) {
-            student.setType(Student.StudentType.valueOf(request.getType()));
-        }
-
-        StudentProfile profile = student.getProfile();
-        if (request.getAddress() != null) {
-            profile.setAddress(request.getAddress());
-        }
-        if (request.getPhoneNumber() != null) {
-            profile.setPhoneNumber(request.getPhoneNumber());
-        }
-        if (request.getDateOfBirth() != null) {
-            profile.setDateOfBirth(request.getDateOfBirth());
-        }
-
-        Student updatedStudent = studentRepository.save(student);
-        return convertToDTO(updatedStudent);
     }
+
+    modelMapper.map(request, student);
+    
+    if (student.getProfile() == null) {
+        student.setProfile(new StudentProfile());
+    }
+    modelMapper.map(request, student.getProfile());
+
+    Student updatedStudent = studentRepository.save(student);
+    return modelMapper.map(updatedStudent, StudentDTO.class);
+}
 
     @Override
     @Transactional
@@ -132,7 +133,7 @@ public class StudentServiceImpl implements StudentService {
         ValidationUtils.validateDateInPast(request.getDateOfBirth(), "Date of birth");
     }
 
-     private void validateUpdateStudentRequest(UpdateStudentRequest request) {
+    private void validateUpdateStudentRequest(UpdateStudentRequest request) {
         List<String> errors = new ArrayList<>();
 
         if (request.getName() != null && request.getName().trim().isEmpty()) {
@@ -160,42 +161,39 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-public AcademicRecordDTO getAcademicRecord(String studentId) {
-    Student student = studentRepository.findById(studentId)
-            .orElseThrow(() -> new StudentNotFoundException(studentId));
-    
-    List<AcademicRecordDTO.EnrollmentRecordDTO> enrollments = fetchEnrollmentRecords(studentId);
-    double gpa = calculateGPA(enrollments);
+    public AcademicRecordDTO getAcademicRecord(String studentId) {
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new StudentNotFoundException(studentId));
 
-    return new AcademicRecordDTO(student.getId(), student.getName(), enrollments, gpa);
-}
+        List<AcademicRecordDTO.EnrollmentRecordDTO> enrollments = fetchEnrollmentRecords(studentId);
+        double gpa = calculateGPA(enrollments);
 
-    
-
-private List<AcademicRecordDTO.EnrollmentRecordDTO> fetchEnrollmentRecords(String studentId) {
-    String enrollmentServiceUrl = "http://localhost:8082/api/enrollments/student/" + studentId;
-    try {
-        EnrollmentDTO[] enrollments = restTemplate.getForObject(enrollmentServiceUrl, EnrollmentDTO[].class);
-        if (enrollments != null) {
-            return Arrays.stream(enrollments)
-                    .map(this::convertToEnrollmentRecordDTO)
-                    .collect(Collectors.toList());
-        }
-    } catch (Exception e) {
-        // Log the error
+        return new AcademicRecordDTO(student.getId(), student.getName(), enrollments, gpa);
     }
-    return Collections.emptyList();
-}
 
-private AcademicRecordDTO.EnrollmentRecordDTO convertToEnrollmentRecordDTO(EnrollmentDTO enrollmentDTO) {
-    return new AcademicRecordDTO.EnrollmentRecordDTO(
-        enrollmentDTO.getCourseId(),
-        enrollmentDTO.getCourseName(),
-        enrollmentDTO.getGrade(),
-        enrollmentDTO.getSemester()
-    );
-}
+    private List<AcademicRecordDTO.EnrollmentRecordDTO> fetchEnrollmentRecords(String studentId) {
+        String enrollmentServiceUrl = "http://localhost:8082/api/enrollments/student/" + studentId;
+        try {
+            EnrollmentDTO[] enrollments = restTemplate.getForObject(enrollmentServiceUrl, EnrollmentDTO[].class);
+            if (enrollments != null) {
+                return Arrays.stream(enrollments)
+                        .map(this::convertToEnrollmentRecordDTO)
+                        .collect(Collectors.toList());
+            }
+        } catch (Exception e) {
+            // Log the error
+        }
+        return Collections.emptyList();
+    }
 
+    private AcademicRecordDTO.EnrollmentRecordDTO convertToEnrollmentRecordDTO(EnrollmentDTO enrollmentDTO) {
+        return new AcademicRecordDTO.EnrollmentRecordDTO(
+                enrollmentDTO.getCourseId(),
+                enrollmentDTO.getCourseName(),
+                enrollmentDTO.getGrade(),
+                enrollmentDTO.getSemester()
+        );
+    }
 
     private double calculateGPA(List<AcademicRecordDTO.EnrollmentRecordDTO> enrollments) {
         if (enrollments.isEmpty()) {
@@ -215,18 +213,5 @@ private AcademicRecordDTO.EnrollmentRecordDTO convertToEnrollmentRecordDTO(Enrol
             case "D": return 1.0;
             default: return 0.0;
         }
-
-    }
-
-    private StudentDTO convertToDTO(Student student) {
-        StudentDTO dto = new StudentDTO();
-        dto.setId(student.getId());
-        dto.setName(student.getName());
-        dto.setEmail(student.getEmail());
-        dto.setType(student.getType().name());
-        dto.setAddress(student.getProfile().getAddress());
-        dto.setPhoneNumber(student.getProfile().getPhoneNumber());
-        dto.setDateOfBirth(student.getProfile().getDateOfBirth());
-        return dto;
     }
 }
