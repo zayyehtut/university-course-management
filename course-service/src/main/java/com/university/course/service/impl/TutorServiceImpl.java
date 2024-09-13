@@ -33,6 +33,14 @@ public class TutorServiceImpl implements TutorService {
         this.modelMapper = modelMapper;
     }
 
+    private TutorDTO mapTutorToDTO(Tutor tutor) {
+        TutorDTO dto = modelMapper.map(tutor, TutorDTO.class);
+        dto.setCourseIds(tutor.getCourses().stream()
+                .map(Course::getId)
+                .collect(Collectors.toSet()));
+        return dto;
+    }
+
 
     @Override
     @Transactional
@@ -45,21 +53,21 @@ public class TutorServiceImpl implements TutorService {
 
         Tutor tutor = modelMapper.map(request, Tutor.class);
         Tutor savedTutor = tutorRepository.save(tutor);
-        return modelMapper.map(savedTutor, TutorDTO.class);
+        return mapTutorToDTO(savedTutor);
     }
 
     @Override
     public TutorDTO getTutorById(String id) {
         Tutor tutor = tutorRepository.findById(id)
                 .orElseThrow(() -> new TutorNotFoundException(id));
-        return modelMapper.map(tutor, TutorDTO.class);
+        return mapTutorToDTO(tutor);
     }
 
     @Override
     public List<TutorDTO> getAllTutors() {
         return tutorRepository.findAll().stream()
-                .map(tutor -> modelMapper.map(tutor, TutorDTO.class))
-                .collect(Collectors.toList());
+        .map(this::mapTutorToDTO)
+        .collect(Collectors.toList());
     }
 
     @Override
@@ -78,7 +86,7 @@ public class TutorServiceImpl implements TutorService {
 
         modelMapper.map(request, tutor);
         Tutor updatedTutor = tutorRepository.save(tutor);
-        return modelMapper.map(updatedTutor, TutorDTO.class);
+        return mapTutorToDTO(updatedTutor);
     }
 
     @Override

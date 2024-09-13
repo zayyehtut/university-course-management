@@ -4,6 +4,7 @@ import com.university.common.exception.*;
 import com.university.course.api.dto.ProfessorDTO;
 import com.university.course.api.dto.CreateProfessorRequest;
 import com.university.course.api.dto.UpdateProfessorRequest;
+import com.university.course.domain.model.Course;
 import com.university.course.domain.model.Professor;
 import com.university.course.domain.repository.ProfessorRepository;
 import com.university.course.exception.ProfessorNotFoundException;
@@ -28,6 +29,14 @@ public class ProfessorServiceImpl implements ProfessorService {
         this.modelMapper = modelMapper;
     }
 
+    private ProfessorDTO mapProfessorToDTO(Professor professor) {
+    ProfessorDTO dto = modelMapper.map(professor, ProfessorDTO.class);
+    dto.setCourseIds(professor.getCourses().stream()
+            .map(Course::getId)
+            .collect(Collectors.toList()));
+    return dto;
+}
+
     @Override
     @Transactional
     public ProfessorDTO createProfessor(CreateProfessorRequest request) {
@@ -38,41 +47,41 @@ public class ProfessorServiceImpl implements ProfessorService {
         professor.setDepartment(request.getDepartment());
 
         Professor savedProfessor = professorRepository.save(professor);
-        return modelMapper.map(savedProfessor, ProfessorDTO.class);
+        return mapProfessorToDTO(savedProfessor);
     }
 
     @Override
     public ProfessorDTO getProfessorById(String id) {
         Professor professor = professorRepository.findById(id)
                 .orElseThrow(() -> new ProfessorNotFoundException(id));
-        return modelMapper.map(professor, ProfessorDTO.class);
+    return mapProfessorToDTO(professor);
     }
 
     @Override
     public List<ProfessorDTO> getAllProfessors() {
         return professorRepository.findAll().stream()
-                .map(professor -> modelMapper.map(professor, ProfessorDTO.class))
-                .collect(Collectors.toList());
+        .map(this::mapProfessorToDTO)
+        .collect(Collectors.toList());
     }
 
     @Override
-    @Transactional
-    public ProfessorDTO updateProfessor(String id, UpdateProfessorRequest request) {
-        validateUpdateProfessorRequest(request);
-    
-        Professor professor = professorRepository.findById(id)
-                .orElseThrow(() -> new ProfessorNotFoundException(id));
-    
-        if (request.getName() != null) {
-            professor.setName(request.getName());
-        }
-        if (request.getDepartment() != null) {
-            professor.setDepartment(request.getDepartment());
-        }
-    
-        Professor updatedProfessor = professorRepository.save(professor);
-        return modelMapper.map(updatedProfessor, ProfessorDTO.class);
+@Transactional
+public ProfessorDTO updateProfessor(String id, UpdateProfessorRequest request) {
+    validateUpdateProfessorRequest(request);
+
+    Professor professor = professorRepository.findById(id)
+            .orElseThrow(() -> new ProfessorNotFoundException(id));
+
+    if (request.getName() != null) {
+        professor.setName(request.getName());
     }
+    if (request.getDepartment() != null) {
+        professor.setDepartment(request.getDepartment());
+    }
+
+    Professor updatedProfessor = professorRepository.save(professor);
+    return mapProfessorToDTO(updatedProfessor);
+}
     
 
     @Override

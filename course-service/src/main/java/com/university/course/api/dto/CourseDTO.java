@@ -12,6 +12,8 @@ public class CourseDTO {
     private String professorName;
     private Set<TutorDTO> tutors;
     private Set<TimetableDTO> timetables;
+    private Set<String> programIds;
+
 
     public CourseDTO() {
         // Default constructor
@@ -107,11 +109,20 @@ public class CourseDTO {
         this.timetables = timetables;
     }
 
+    public Set<String> getProgramIds() {
+        return programIds;
+    }
+
+    public void setProgramIds(Set<String> programIds) {
+        this.programIds = programIds;
+    }
+    
     @Override
     public String toString() {
         return "CourseDTO{" +
                 "id='" + id + '\'' +
                 ", code='" + code + '\'' +
+                ", programIds=" + programIds +
                 ", name='" + name + '\'' +
                 ", credits=" + credits +
                 ", type='" + type + '\'' +

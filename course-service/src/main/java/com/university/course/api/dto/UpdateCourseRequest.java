@@ -9,9 +9,13 @@ public class UpdateCourseRequest {
     private String type;
     private String professorId;
     private Set<String> tutorIds;
+    private Set<String> programIds;
+
 
     public UpdateCourseRequest() {
         this.tutorIds = new HashSet<>();
+        this.programIds = new HashSet<>();
+
     }
 
     public UpdateCourseRequest(String name, Integer credits, String type, String professorId, Set<String> tutorIds) {
@@ -20,6 +24,8 @@ public class UpdateCourseRequest {
         this.type = type;
         this.professorId = professorId;
         this.tutorIds = tutorIds != null ? tutorIds : new HashSet<>();
+        this.programIds = programIds != null ? programIds : new HashSet<>();
+
     }
 
     public String getName() {
@@ -62,6 +68,14 @@ public class UpdateCourseRequest {
         this.tutorIds = tutorIds;
     }
 
+    public Set<String> getProgramIds() {
+        return programIds;
+    }
+
+    public void setProgramIds(Set<String> programIds) {
+        this.programIds = programIds;
+    }
+
     @Override
     public String toString() {
         return "UpdateCourseRequest{" +
@@ -70,6 +84,7 @@ public class UpdateCourseRequest {
                 ", type='" + type + '\'' +
                 ", professorId='" + professorId + '\'' +
                 ", tutorIds=" + tutorIds +
+                ", programIds=" + programIds +
                 '}';
     }
 }

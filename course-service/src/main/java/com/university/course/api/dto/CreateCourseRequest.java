@@ -11,19 +11,24 @@ public class CreateCourseRequest {
     private String type;
     private String professorId;
     private Set<String> tutorIds;
+    private Set<String> programIds;
+
     
 
     public CreateCourseRequest() {
         this.tutorIds = new HashSet<>();
+        this.programIds = new HashSet<>();
+
     }
 
-    public CreateCourseRequest(String code, String name, int credits, String type, String professorId, Set<String> tutorIds) {
+    public CreateCourseRequest(String code, String name, int credits, String type, String professorId, Set<String> tutorIds, Set<String> programIds) {
         this.code = code;
         this.name = name;
         this.credits = credits;
         this.type = type;
         this.professorId = professorId;
-        this.tutorIds = tutorIds;
+        this.tutorIds = tutorIds != null ? tutorIds : new HashSet<>();
+        this.programIds = programIds != null ? programIds : new HashSet<>();
     }
 
     public String getCode() {
@@ -74,8 +79,16 @@ public class CreateCourseRequest {
         this.tutorIds = tutorIds;
     }
 
+    
+    public Set<String> getProgramIds() {
+        return programIds;
+    }
 
-     @Override
+    public void setProgramIds(Set<String> programIds) {
+        this.programIds = programIds;
+    }
+     
+    @Override
     public String toString() {
         return "CreateCourseRequest{" +
                 "code='" + code + '\'' +
@@ -84,6 +97,7 @@ public class CreateCourseRequest {
                 ", type='" + type + '\'' +
                 ", professorId='" + professorId + '\'' +
                 ", tutorIds=" + tutorIds +
+                ", programIds=" + programIds +
                 '}';
     }
 }

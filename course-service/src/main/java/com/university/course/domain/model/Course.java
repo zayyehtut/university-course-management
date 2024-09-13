@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "courses")
@@ -28,20 +29,22 @@ public class Course {
     @Column(nullable = false)
     private CourseType type;
 
+    @ManyToMany(mappedBy = "courses")
+    @JsonIgnoreProperties("courses")
+    private Set<Program> programs = new HashSet<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "professor_id")
     private Professor professor;
 
     @ManyToMany
-    
-    
-
     @JoinTable(
         name = "course_tutors",
         joinColumns = @JoinColumn(name = "course_id"),
         inverseJoinColumns = @JoinColumn(name = "tutor_id")
     )
     @JsonIgnore 
+    @JsonIgnoreProperties("courses")
     private Set<Tutor> tutors = new HashSet<>();
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -54,6 +57,9 @@ public class Course {
     // No-argument constructor
     public Course() {
         this.tutors = new HashSet<>();
+        this.timetables = new HashSet<>();
+        this.programs = new HashSet<>();
+        
     }
 
     // Parameterized constructor
@@ -150,6 +156,21 @@ public class Course {
         timetables.remove(timetable);
         timetable.setCourse(null);
     }
+
+    public Set<Program> getPrograms() {
+        return programs;
+    }
+
+    public void setPrograms(Set<Program> programs) {
+        this.programs = programs;
+    }
+
+    public void addProgram(Program program) {
+        this.programs.add(program);
+        program.getCourses().add(this);
+    }
+
+    
 
     @Override
     public boolean equals(Object o) {

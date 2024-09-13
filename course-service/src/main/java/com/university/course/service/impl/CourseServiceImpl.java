@@ -39,6 +39,7 @@ public class CourseServiceImpl implements CourseService {
     private final ProfessorRepository professorRepository;
     private final TutorRepository tutorRepository;
     private final TimetableRepository timetableRepository;
+    private final ProgramRepository programRepository;
     private final ModelMapper modelMapper;
 
     @Autowired
@@ -46,55 +47,67 @@ public class CourseServiceImpl implements CourseService {
                              ProfessorRepository professorRepository,
                              TutorRepository tutorRepository,
                              TimetableRepository timetableRepository,
+                             ProgramRepository programRepository,
                              ModelMapper modelMapper) {
         this.courseRepository = courseRepository;
         this.professorRepository = professorRepository;
         this.tutorRepository = tutorRepository;
         this.timetableRepository = timetableRepository;
+        this.programRepository = programRepository;
         this.modelMapper = modelMapper;
     }
 
 
     @Override
-    @Transactional
-    public CourseDTO createCourse(CreateCourseRequest request) {
-        validateCreateCourseRequest(request);
+@Transactional
+public CourseDTO createCourse(CreateCourseRequest request) {
+    validateCreateCourseRequest(request);
 
-        if (courseRepository.findByCode(request.getCode()).isPresent()) {
-            throw new DuplicateCourseCodeException(request.getCode());
-        }
-
-        Professor professor = professorRepository.findById(request.getProfessorId())
-                .orElseThrow(() -> new ProfessorNotFoundException(request.getProfessorId()));
-
-                Course course = new Course();
-                course.setCode(request.getCode());
-                course.setName(request.getName());
-                course.setCredits(request.getCredits());
-                course.setType(Course.CourseType.valueOf(request.getType()));
-                course.setProfessor(professor);
-            
-                // Save the course first to ensure it has an ID
-                course = courseRepository.save(course);
-
-        if (request.getTutorIds() != null && !request.getTutorIds().isEmpty()) {
-            Set<Tutor> tutors = request.getTutorIds().stream()
-                    .map(id -> tutorRepository.findById(id)
-                            .orElseThrow(() -> new TutorNotFoundException(id)))
-                    .collect(Collectors.toSet());
-
-
-            for (Tutor tutor : tutors) {
-                course.addTutor(tutor);
-                tutorRepository.save(tutor);  // Save each tutor to update the relationship
-            }
-        }
-
-         // Save the course again to update the relationships
-        course = courseRepository.save(course);
-        return mapCourseToDTO(course);
-        
+    if (courseRepository.findByCode(request.getCode()).isPresent()) {
+        throw new DuplicateCourseCodeException(request.getCode());
     }
+
+    Professor professor = professorRepository.findById(request.getProfessorId())
+            .orElseThrow(() -> new ProfessorNotFoundException(request.getProfessorId()));
+
+    Course course = new Course();
+    course.setCode(request.getCode());
+    course.setName(request.getName());
+    course.setCredits(request.getCredits());
+    course.setType(Course.CourseType.valueOf(request.getType()));
+    course.setProfessor(professor);
+
+    // Save the course first to ensure it has an ID
+    course = courseRepository.save(course);
+
+    if (request.getTutorIds() != null && !request.getTutorIds().isEmpty()) {
+        Set<Tutor> tutors = request.getTutorIds().stream()
+                .map(id -> tutorRepository.findById(id)
+                        .orElseThrow(() -> new TutorNotFoundException(id)))
+                .collect(Collectors.toSet());
+
+        for (Tutor tutor : tutors) {
+            course.addTutor(tutor);
+            tutorRepository.save(tutor);  // Save each tutor to update the relationship
+        }
+    }
+
+    // Add program association logic
+    if (request.getProgramIds() != null && !request.getProgramIds().isEmpty()) {
+        Set<Program> programs = request.getProgramIds().stream()
+                .map(id -> programRepository.findById(id)
+                        .orElseThrow(() -> new ResourceNotFoundException("Program not found with id: " + id)))
+                .collect(Collectors.toSet());
+
+        for (Program program : programs) {
+            course.addProgram(program);
+        }
+    }
+
+    // Save the course again to update the relationships
+    course = courseRepository.save(course);
+    return mapCourseToDTO(course);
+}
     
     @Override
     public CourseDTO getCourseById(String id) {
@@ -153,6 +166,14 @@ public class CourseServiceImpl implements CourseService {
             });
 
             course.setTutors(newTutors);
+        }
+
+        if (request.getProgramIds() != null) {
+            Set<Program> programs = request.getProgramIds().stream()
+                    .map(programId -> programRepository.findById(programId)
+                            .orElseThrow(() -> new ResourceNotFoundException("Program not found with id: " + programId)))
+                    .collect(Collectors.toSet());
+            course.setPrograms(programs);
         }
 
         Course updatedCourse = courseRepository.save(course);
@@ -285,6 +306,9 @@ public class CourseServiceImpl implements CourseService {
         CourseDTO dto = modelMapper.map(course, CourseDTO.class);
         dto.setTutors(course.getTutors().stream()
                 .map(this::mapTutorToDTO)
+                .collect(Collectors.toSet()));
+        dto.setProgramIds(course.getPrograms().stream()
+                .map(Program::getId)
                 .collect(Collectors.toSet()));
         return dto;
     }
