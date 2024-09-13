@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,20 +38,35 @@ public class StudentServiceImpl implements StudentService {
     }
 
     private void configureModelMapper() {
-        modelMapper.createTypeMap(CreateStudentRequest.class, Student.class)
-            .addMappings(mapper -> {
-                mapper.skip(Student::setId);
-                mapper.map(src -> src.getType() != null ? Student.StudentType.valueOf(src.getType().toUpperCase()) : null, Student::setType);
-            });
+    // Mapping from CreateStudentRequest to Student
+    modelMapper.createTypeMap(CreateStudentRequest.class, Student.class)
+        .addMappings(mapper -> {
+            mapper.skip(Student::setId);
+            mapper.map(src -> src.getType() != null ? Student.StudentType.valueOf(src.getType().toUpperCase()) : null, Student::setType);
+            mapper.map(CreateStudentRequest::getAddress, (dest, v) -> dest.getProfile().setAddress((String) v));
+            mapper.map(CreateStudentRequest::getPhoneNumber, (dest, v) -> dest.getProfile().setPhoneNumber((String) v));
+            mapper.map(CreateStudentRequest::getDateOfBirth, (dest, v) -> dest.getProfile().setDateOfBirth((LocalDate) v));
+        });
 
-        modelMapper.createTypeMap(Student.class, StudentDTO.class)
-            .addMappings(mapper -> {
-                mapper.map(src -> src.getProfile().getAddress(), StudentDTO::setAddress);
-                mapper.map(src -> src.getProfile().getPhoneNumber(), StudentDTO::setPhoneNumber);
-                mapper.map(src -> src.getProfile().getDateOfBirth(), StudentDTO::setDateOfBirth);
-            });
-    }
+    // Mapping from Student to StudentDTO
+    modelMapper.createTypeMap(Student.class, StudentDTO.class)
+        .addMappings(mapper -> {
+            mapper.map(src -> src.getProfile().getAddress(), StudentDTO::setAddress);
+            mapper.map(src -> src.getProfile().getPhoneNumber(), StudentDTO::setPhoneNumber);
+            mapper.map(src -> src.getProfile().getDateOfBirth(), StudentDTO::setDateOfBirth);
+        });
 
+    // Mapping from UpdateStudentRequest to Student
+    modelMapper.createTypeMap(UpdateStudentRequest.class, Student.class)
+        .addMappings(mapper -> {
+            mapper.map(UpdateStudentRequest::getName, Student::setName);
+            mapper.map(UpdateStudentRequest::getEmail, Student::setEmail);
+            mapper.map(src -> src.getType() != null ? Student.StudentType.valueOf(src.getType().toUpperCase()) : null, Student::setType);
+            mapper.map(UpdateStudentRequest::getAddress, (dest, v) -> dest.getProfile().setAddress((String) v));
+            mapper.map(UpdateStudentRequest::getPhoneNumber, (dest, v) -> dest.getProfile().setPhoneNumber((String) v));
+            mapper.map(UpdateStudentRequest::getDateOfBirth, (dest, v) -> dest.getProfile().setDateOfBirth((LocalDate) v));
+        });
+}
     @Override
     @Transactional
     public StudentDTO createStudent(CreateStudentRequest request) {
