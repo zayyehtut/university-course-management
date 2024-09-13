@@ -3,8 +3,6 @@ package com.university.enrollment.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.slf4j.LoggerFactory;
-
 import com.university.common.exception.*;
 import com.university.common.util.ValidationUtils;
 import com.university.common.dto.EnrollmentDTO;
@@ -33,7 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.Comparator;
 
 
 @Service

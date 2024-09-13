@@ -1,21 +1,29 @@
 package com.university.course.api.dto;
 
+import java.util.HashSet;
+import java.util.Set;
+
+
 public class CreateCourseRequest {
     private String code;
     private String name;
     private int credits;
     private String type;
     private String professorId;
+    private Set<String> tutorIds;
+    
 
     public CreateCourseRequest() {
+        this.tutorIds = new HashSet<>();
     }
 
-    public CreateCourseRequest(String code, String name, int credits, String type, String professorId) {
+    public CreateCourseRequest(String code, String name, int credits, String type, String professorId, Set<String> tutorIds) {
         this.code = code;
         this.name = name;
         this.credits = credits;
         this.type = type;
         this.professorId = professorId;
+        this.tutorIds = tutorIds;
     }
 
     public String getCode() {
@@ -58,7 +66,16 @@ public class CreateCourseRequest {
         this.professorId = professorId;
     }
 
-    @Override
+    public Set<String> getTutorIds() {
+        return tutorIds;
+    }
+
+    public void setTutorIds(Set<String> tutorIds) {
+        this.tutorIds = tutorIds;
+    }
+
+
+     @Override
     public String toString() {
         return "CreateCourseRequest{" +
                 "code='" + code + '\'' +
@@ -66,6 +83,7 @@ public class CreateCourseRequest {
                 ", credits=" + credits +
                 ", type='" + type + '\'' +
                 ", professorId='" + professorId + '\'' +
+                ", tutorIds=" + tutorIds +
                 '}';
     }
 }

@@ -2,6 +2,9 @@ package com.university.course.api.controllers;
 
 import com.university.course.api.dto.CourseDTO;
 import com.university.course.api.dto.CreateCourseRequest;
+import com.university.course.api.dto.CreateTimetableRequest;
+import com.university.course.api.dto.TimetableDTO;
+import com.university.course.api.dto.TutorDTO;
 import com.university.course.api.dto.UpdateCourseRequest;
 import com.university.course.service.CourseService;
 import jakarta.validation.Valid;
@@ -50,6 +53,37 @@ public class CourseController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCourse(@PathVariable String id) {
         courseService.deleteCourse(id);
+        return ResponseEntity.noContent().build();
+    }
+
+     @GetMapping("/{courseId}/tutors")
+    public ResponseEntity<List<TutorDTO>> getTutorsForCourse(@PathVariable String courseId) {
+        List<TutorDTO> tutors = courseService.getTutorsByCourseId(courseId);
+        return ResponseEntity.ok(tutors);
+    }
+
+    @PostMapping("/{courseId}/tutors/{tutorId}")
+    public ResponseEntity<CourseDTO> assignTutorToCourse(@PathVariable String courseId, @PathVariable String tutorId) {
+        CourseDTO updatedCourse = courseService.assignTutorToCourse(courseId, tutorId);
+        return ResponseEntity.ok(updatedCourse);
+    }
+
+    @DeleteMapping("/{courseId}/tutors/{tutorId}")
+    public ResponseEntity<CourseDTO> removeTutorFromCourse(@PathVariable String courseId, @PathVariable String tutorId) {
+        CourseDTO updatedCourse = courseService.removeTutorFromCourse(courseId, tutorId);
+        return ResponseEntity.ok(updatedCourse);
+    }
+
+    @PostMapping("/{courseId}/timetables")
+    public ResponseEntity<TimetableDTO> addTimetableToCourse(@PathVariable String courseId, @Valid @RequestBody CreateTimetableRequest request) {
+        request.setCourseId(courseId);
+        TimetableDTO createdTimetable = courseService.addTimetableToCourse(courseId, request);
+        return new ResponseEntity<>(createdTimetable, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{courseId}/timetables/{timetableId}")
+    public ResponseEntity<Void> removeTimetableFromCourse(@PathVariable String courseId, @PathVariable String timetableId) {
+        courseService.removeTimetableFromCourse(courseId, timetableId);
         return ResponseEntity.noContent().build();
     }
 }

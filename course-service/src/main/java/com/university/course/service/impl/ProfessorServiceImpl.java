@@ -1,8 +1,6 @@
 package com.university.course.service.impl;
 
 import com.university.common.exception.*;
-
-
 import com.university.course.api.dto.ProfessorDTO;
 import com.university.course.api.dto.CreateProfessorRequest;
 import com.university.course.api.dto.UpdateProfessorRequest;
@@ -10,6 +8,7 @@ import com.university.course.domain.model.Professor;
 import com.university.course.domain.repository.ProfessorRepository;
 import com.university.course.exception.ProfessorNotFoundException;
 import com.university.course.service.ProfessorService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,10 +20,12 @@ import java.util.stream.Collectors;
 public class ProfessorServiceImpl implements ProfessorService {
 
     private final ProfessorRepository professorRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public ProfessorServiceImpl(ProfessorRepository professorRepository) {
+    public ProfessorServiceImpl(ProfessorRepository professorRepository, ModelMapper modelMapper) {
         this.professorRepository = professorRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -37,20 +38,20 @@ public class ProfessorServiceImpl implements ProfessorService {
         professor.setDepartment(request.getDepartment());
 
         Professor savedProfessor = professorRepository.save(professor);
-        return convertToDTO(savedProfessor);
+        return modelMapper.map(savedProfessor, ProfessorDTO.class);
     }
 
     @Override
     public ProfessorDTO getProfessorById(String id) {
         Professor professor = professorRepository.findById(id)
                 .orElseThrow(() -> new ProfessorNotFoundException(id));
-        return convertToDTO(professor);
+        return modelMapper.map(professor, ProfessorDTO.class);
     }
 
     @Override
     public List<ProfessorDTO> getAllProfessors() {
         return professorRepository.findAll().stream()
-                .map(this::convertToDTO)
+                .map(professor -> modelMapper.map(professor, ProfessorDTO.class))
                 .collect(Collectors.toList());
     }
 
@@ -70,7 +71,7 @@ public class ProfessorServiceImpl implements ProfessorService {
         }
     
         Professor updatedProfessor = professorRepository.save(professor);
-        return convertToDTO(updatedProfessor);
+        return modelMapper.map(updatedProfessor, ProfessorDTO.class);
     }
     
 
@@ -99,17 +100,5 @@ public class ProfessorServiceImpl implements ProfessorService {
         if (request.getDepartment() != null && request.getDepartment().trim().isEmpty()) {
             throw new ValidationException("Department cannot be empty");
         }
-    }
-    
-
-    private ProfessorDTO convertToDTO(Professor professor) {
-        ProfessorDTO dto = new ProfessorDTO();
-        dto.setId(professor.getId());
-        dto.setName(professor.getName());
-        dto.setDepartment(professor.getDepartment());
-        dto.setCourseIds(professor.getCourses().stream()
-                .map(course -> course.getId())
-                .collect(Collectors.toList()));
-        return dto;
     }
 }

@@ -86,7 +86,6 @@ public class Professor {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", department='" + department + '\'' +
-                ", courses=" + courses +
                 '}';
     }
 }
