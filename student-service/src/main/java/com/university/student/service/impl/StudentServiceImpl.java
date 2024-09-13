@@ -1,30 +1,23 @@
 package com.university.student.service.impl;
-
-import com.university.common.exception.*;
-import com.university.common.util.ValidationUtils;
 import com.university.student.util.StudentValidationUtils;
 import com.university.student.util.AcademicRecordUtils;
 
 import com.university.student.service.StudentService;
 import com.university.student.api.dto.*;
-import com.university.common.dto.EnrollmentDTO;
 import com.university.student.domain.model.Student;
 import com.university.student.domain.model.StudentProfile;
 import com.university.student.domain.repository.StudentRepository;
 import com.university.student.exception.StudentNotFoundException;
 import com.university.student.exception.DuplicateEmailException;
 
-import org.modelmapper.Conditions;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
