@@ -128,7 +128,7 @@ API endpoints for each service:
 
 ## Complete API Documentation
 
-Please read Detail_APIs_Documentation.md for details API requests and responese.
+Please read [a relative link](Detail_APIs_Documentation.md) for details API requests and responese.
 
 ## License
 
