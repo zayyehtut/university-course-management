@@ -579,7 +579,7 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
 
 #### Progfessor
 
-#### Create Professor
+##### Create Professor
 
 - **Method**: `POST`
 - **URL**: `http://localhost:8083/api/professors`
@@ -614,7 +614,7 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
     curl -X POST -H "Content-Type:application/json" -d '{"name":"Dr. Jane Smith","department":"Computer Science"}' http://localhost:8083/api/professors
     ```
 
-#### Get Professor by ID
+##### Get Professor by ID
 
 - **Method**: `GET`
 - **URL**: `http://localhost:8083/api/professors/{{professorId}}`
@@ -642,7 +642,7 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
     curl -X GET -H "Content-Type:application/json" http://localhost:8083/api/professors/{{professorId}}
     ```
 
-#### Get All Professors
+##### Get All Professors
 
 - **Method**: `GET`
 - **URL**: `http://localhost:8083/api/professors`
@@ -677,7 +677,7 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
     curl -X GET -H "Content-Type:application/json" http://localhost:8083/api/professors
     ```
 
-#### Update Professor
+##### Update Professor
 
 - **Method**: `PUT`
 - **URL**: `http://localhost:8083/api/professors/{{professorId}}`
@@ -712,7 +712,7 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
     curl -X PUT -H "Content-Type:application/json" -d '{"name":"Dr. Jane Smith Updated","department":"Electrical Engineering"}' http://localhost:8083/api/professors/{{professorId}}
     ```
 
-#### Delete Professor
+##### Delete Professor
 
 - **Method**: `DELETE`
 - **URL**: `http://localhost:8083/api/professors/{{professorId}}`
