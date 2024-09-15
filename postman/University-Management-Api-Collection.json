@@ -1,0 +1,1205 @@
+{
+  "info": {
+    "_postman_id": "12345678-1234-1234-1234-123456789012",
+    "name": "University Course Management",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Student Service",
+      "item": [
+        {
+          "name": "Create Student",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{studentServiceBaseUrl}}/api/students",
+              "host": ["{{studentServiceBaseUrl}}"],
+              "path": ["api", "students"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"type\": \"UNDERGRADUATE\",\n  \"address\": \"123 Main St\",\n  \"phoneNumber\": \"1234567890\",\n  \"dateOfBirth\": \"1990-01-01\"\n}"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.environment.set(\"studentId\", jsonData.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Student by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{studentServiceBaseUrl}}/api/students/{{studentId}}",
+              "host": ["{{studentServiceBaseUrl}}"],
+              "path": ["api", "students", "{{studentId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Students",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{studentServiceBaseUrl}}/api/students",
+              "host": ["{{studentServiceBaseUrl}}"],
+              "path": ["api", "students"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Academic Record",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{studentServiceBaseUrl}}/api/students/{{studentId}}/academic-record",
+              "host": ["{{studentServiceBaseUrl}}"],
+              "path": ["api", "students", "{{studentId}}", "academic-record"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Student",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{studentServiceBaseUrl}}/api/students/{{studentId}}",
+              "host": ["{{studentServiceBaseUrl}}"],
+              "path": ["api", "students", "{{studentId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe Updated\",\n  \"email\": \"john.doe.updated@example.com\",\n  \"type\": \"POSTGRADUATE\",\n  \"address\": \"456 Main St\",\n  \"phoneNumber\": \"0987654321\",\n  \"dateOfBirth\": \"1990-01-01\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Student",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{studentServiceBaseUrl}}/api/students/{{studentId}}",
+              "host": ["{{studentServiceBaseUrl}}"],
+              "path": ["api", "students", "{{studentId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Course Service",
+      "item": [
+        {
+          "name": "Courses",
+          "item": [
+            {
+              "name": "Create Course",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/courses",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "courses"]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"CS101\",\n  \"name\": \"Introduction to Computer Science\",\n  \"credits\": 3,\n  \"type\": \"MANDATORY\",\n  \"professorId\": \"{{professorId}}\",\n  \"tutorIds\": [],\n  \"programIds\": []\n}"
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 201\", function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "",
+                      "var jsonData = pm.response.json();",
+                      "pm.environment.set(\"courseId\", jsonData.id);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Get Course by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/courses/{{courseId}}",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "courses", "{{courseId}}"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get All Courses",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/courses",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "courses"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Course",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/courses/{{courseId}}",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "courses", "{{courseId}}"]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Introduction to Computer Science Updated\",\n  \"credits\": 4,\n  \"type\": \"ELECTIVE\",\n  \"professorId\": \"{{professorId}}\",\n  \"tutorIds\": [],\n  \"programIds\": []\n}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Course",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/courses/{{courseId}}",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "courses", "{{courseId}}"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Tutors for Course",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/courses/{{courseId}}/tutors",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "courses", "{{courseId}}", "tutors"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Assign Tutor to Course",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/courses/{{courseId}}/tutors/{{tutorId}}",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": [
+                    "api",
+                    "courses",
+                    "{{courseId}}",
+                    "tutors",
+                    "{{tutorId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Remove Tutor from Course",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/courses/{{courseId}}/tutors/{{tutorId}}",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": [
+                    "api",
+                    "courses",
+                    "{{courseId}}",
+                    "tutors",
+                    "{{tutorId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Add Timetable to Course",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/courses/{{courseId}}/timetables",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "courses", "{{courseId}}", "timetables"]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"dayOfWeek\": \"MONDAY\",\n  \"startTime\": \"09:00\",\n  \"endTime\": \"10:30\",\n  \"location\": \"Room 101\"\n}"
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 201\", function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "",
+                      "var jsonData = pm.response.json();",
+                      "pm.environment.set(\"timetableId\", jsonData.id);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Remove Timetable from Course",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/courses/{{courseId}}/timetables/{{timetableId}}",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": [
+                    "api",
+                    "courses",
+                    "{{courseId}}",
+                    "timetables",
+                    "{{timetableId}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Professors",
+          "item": [
+            {
+              "name": "Create Professor",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/professors",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "professors"]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Dr. Jane Smith\",\n  \"department\": \"Computer Science\"\n}"
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 201\", function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "",
+                      "var jsonData = pm.response.json();",
+                      "pm.environment.set(\"professorId\", jsonData.id);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Get Professor by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/professors/{{professorId}}",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "professors", "{{professorId}}"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get All Professors",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/professors",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "professors"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Professor",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/professors/{{professorId}}",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "professors", "{{professorId}}"]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Dr. Jane Smith Updated\",\n  \"department\": \"Electrical Engineering\"\n}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Professor",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/professors/{{professorId}}",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "professors", "{{professorId}}"]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Programs",
+          "item": [
+            {
+              "name": "Create Program",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/programs",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "programs"]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Computer Science\",\n  \"description\": \"Bachelor of Science in Computer Science\",\n  \"degreeType\": \"BACHELOR\",\n  \"requiredCredits\": 120\n}"
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 201\", function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "",
+                      "var jsonData = pm.response.json();",
+                      "pm.environment.set(\"programId\", jsonData.id);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Get Program by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/programs/{{programId}}",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "programs", "{{programId}}"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get All Programs",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/programs",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "programs"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Program",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/programs/{{programId}}",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "programs", "{{programId}}"]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Computer Science Updated\",\n  \"description\": \"Bachelor of Science in Computer Science Updated\",\n  \"degreeType\": \"MASTER\",\n  \"requiredCredits\": 150\n}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Program",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/programs/{{programId}}",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "programs", "{{programId}}"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Assign Course to Program",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/programs/{{programId}}/courses/{{courseId}}",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": [
+                    "api",
+                    "programs",
+                    "{{programId}}",
+                    "courses",
+                    "{{courseId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Remove Course from Program",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/programs/{{programId}}/courses/{{courseId}}",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": [
+                    "api",
+                    "programs",
+                    "{{programId}}",
+                    "courses",
+                    "{{courseId}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Timetables",
+          "item": [
+            {
+              "name": "Create Timetable",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/timetables",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "timetables"]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"courseId\": \"{{courseId}}\",\n  \"dayOfWeek\": \"MONDAY\",\n  \"startTime\": \"09:00\",\n  \"endTime\": \"10:30\",\n  \"location\": \"Room 101\"\n}"
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 201\", function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "",
+                      "var jsonData = pm.response.json();",
+                      "pm.environment.set(\"timetableId\", jsonData.id);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Get Timetable by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/timetables/{{timetableId}}",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "timetables", "{{timetableId}}"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Timetables by Course ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/timetables/course/{{courseId}}",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "timetables", "course", "{{courseId}}"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Timetable",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/timetables/{{timetableId}}",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "timetables", "{{timetableId}}"]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"courseId\": \"{{courseId}}\",\n  \"dayOfWeek\": \"TUESDAY\",\n  \"startTime\": \"10:00\",\n  \"endTime\": \"11:30\",\n  \"location\": \"Room 102\"\n}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Timetable",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/timetables/{{timetableId}}",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "timetables", "{{timetableId}}"]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Tutors",
+          "item": [
+            {
+              "name": "Create Tutor",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/tutors",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "tutors"]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Alice Johnson\",\n  \"email\": \"alice.johnson@example.com\",\n  \"specialization\": \"Computer Science\"\n}"
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 201\", function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "",
+                      "var jsonData = pm.response.json();",
+                      "pm.environment.set(\"tutorId\", jsonData.id);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Get Tutor by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/tutors/{{tutorId}}",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "tutors", "{{tutorId}}"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get All Tutors",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/tutors",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "tutors"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Tutor",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/tutors/{{tutorId}}",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "tutors", "{{tutorId}}"]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Alice Johnson Updated\",\n  \"email\": \"alice.johnson.updated@example.com\",\n  \"specialization\": \"Electrical Engineering\"\n}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Tutor",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/tutors/{{tutorId}}",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": ["api", "tutors", "{{tutorId}}"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Assign Tutor to Course",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/tutors/{{tutorId}}/courses/{{courseId}}",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": [
+                    "api",
+                    "tutors",
+                    "{{tutorId}}",
+                    "courses",
+                    "{{courseId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Remove Tutor from Course",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{courseServiceBaseUrl}}/api/tutors/{{tutorId}}/courses/{{courseId}}",
+                  "host": ["{{courseServiceBaseUrl}}"],
+                  "path": [
+                    "api",
+                    "tutors",
+                    "{{tutorId}}",
+                    "courses",
+                    "{{courseId}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Enrollment Service",
+      "item": [
+        {
+          "name": "Create Enrollment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{enrollmentServiceBaseUrl}}/api/enrollments",
+              "host": ["{{enrollmentServiceBaseUrl}}"],
+              "path": ["api", "enrollments"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentId\": \"{{studentId}}\",\n  \"courseId\": \"{{courseId}}\",\n  \"courseName\": \"Introduction to Computer Science\",\n  \"semester\": \"Fall 2023\"\n}"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.environment.set(\"enrollmentId\", jsonData.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Enrollment by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{enrollmentServiceBaseUrl}}/api/enrollments/{{enrollmentId}}",
+              "host": ["{{enrollmentServiceBaseUrl}}"],
+              "path": ["api", "enrollments", "{{enrollmentId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Enrollments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{enrollmentServiceBaseUrl}}/api/enrollments",
+              "host": ["{{enrollmentServiceBaseUrl}}"],
+              "path": ["api", "enrollments"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Enrollment Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{enrollmentServiceBaseUrl}}/api/enrollments/{{enrollmentId}}/status?status=COMPLETED",
+              "host": ["{{enrollmentServiceBaseUrl}}"],
+              "path": ["api", "enrollments", "{{enrollmentId}}", "status"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "COMPLETED"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Enrollment",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{enrollmentServiceBaseUrl}}/api/enrollments/{{enrollmentId}}",
+              "host": ["{{enrollmentServiceBaseUrl}}"],
+              "path": ["api", "enrollments", "{{enrollmentId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Grade",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{enrollmentServiceBaseUrl}}/api/enrollments/{{enrollmentId}}/grades",
+              "host": ["{{enrollmentServiceBaseUrl}}"],
+              "path": ["api", "enrollments", "{{enrollmentId}}", "grades"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"letterGrade\": \"A\",\n  \"numericGrade\": 4.0\n}"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.environment.set(\"gradeId\", jsonData.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Grade",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{enrollmentServiceBaseUrl}}/api/enrollments/grades/{{gradeId}}",
+              "host": ["{{enrollmentServiceBaseUrl}}"],
+              "path": ["api", "enrollments", "grades", "{{gradeId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"letterGrade\": \"B\",\n  \"numericGrade\": 3.0\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Grade by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{enrollmentServiceBaseUrl}}/api/enrollments/grades/{{gradeId}}",
+              "host": ["{{enrollmentServiceBaseUrl}}"],
+              "path": ["api", "enrollments", "grades", "{{gradeId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Grades by Enrollment ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{enrollmentServiceBaseUrl}}/api/enrollments/{{enrollmentId}}/grades",
+              "host": ["{{enrollmentServiceBaseUrl}}"],
+              "path": ["api", "enrollments", "{{enrollmentId}}", "grades"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Enrollments by Student ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{enrollmentServiceBaseUrl}}/api/enrollments/student/{{studentId}}",
+              "host": ["{{enrollmentServiceBaseUrl}}"],
+              "path": ["api", "enrollments", "student", "{{studentId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
