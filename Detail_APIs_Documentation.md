@@ -10,9 +10,6 @@ This documentation provides an overview of the University Course Management API,
    - [Course Service](#course-service)
    - [Enrollment Service](#enrollment-service)
 3. [Sample Responses](#sample-responses)
-4. [Running the Collection](#running-the-collection)
-   - [Windows](#windows)
-   - [macOS/Linux](#macoslinux)
 
 ## Introduction
 
@@ -101,7 +98,7 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
     curl -X GET -H "Content-Type:application/json" http://localhost:8081/api/students/{{studentId}}
     ```
 
-### Get All Students
+#### Get All Students
 
 - **Method**: `GET`
 - **URL**: `http://localhost:8081/api/students`
@@ -144,7 +141,7 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
     curl -X GET -H "Content-Type:application/json" http://localhost:8081/api/students
     ```
 
-### Get Academic Record
+#### Get Academic Record
 
 - **Method**: `GET`
 - **URL**: `http://localhost:8081/api/students/{{studentId}}/academic-record`
@@ -186,7 +183,7 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
     curl -X GET -H "Content-Type:application/json" http://localhost:8081/api/students/{{studentId}}/academic-record
     ```
 
-### Update Student
+#### Update Student
 
 - **Method**: `PUT`
 - **URL**: `http://localhost:8081/api/students/{{studentId}}`
@@ -229,7 +226,7 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
     curl -X PUT -H "Content-Type:application/json" -d '{"name":"John Doe Updated","email":"john.doe.updated@example.com","type":"POSTGRADUATE","address":"456 Main St","phoneNumber":"0987654321","dateOfBirth":"1990-01-01"}' http://localhost:8081/api/students/{{studentId}}
     ```
 
-### Delete Student
+#### Delete Student
 
 - **Method**: `DELETE`
 - **URL**: `http://localhost:8081/api/students/{{studentId}}`
@@ -253,7 +250,7 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
 
 #### Course
 
-#### Create Course
+##### Create Course
 
 - **Method**: `POST`
 - **URL**: `http://localhost:8083/api/courses`
@@ -298,7 +295,7 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
     curl -X POST -H "Content-Type:application/json" -d '{"code":"CS101","name":"Introduction to Computer Science","credits":3,"type":"MANDATORY","professorId":"{{professorId}}","tutorIds":[],"programIds":[]}' http://localhost:8083/api/courses
     ```
 
-#### Get Course by ID
+##### Get Course by ID
 
 - **Method**: `GET`
 - **URL**: `http://localhost:8083/api/courses/{{courseId}}`
@@ -331,7 +328,7 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
     curl -X GET -H "Content-Type:application/json" http://localhost:8083/api/courses/{{courseId}}
     ```
 
-#### Get All Courses
+##### Get All Courses
 
 - **Method**: `GET`
 - **URL**: `http://localhost:8083/api/courses`
@@ -376,7 +373,7 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
     curl -X GET -H "Content-Type:application/json" http://localhost:8083/api/courses
     ```
 
-#### Update Course
+##### Update Course
 
 - **Method**: `PUT`
 - **URL**: `http://localhost:8083/api/courses/{{courseId}}`
@@ -420,7 +417,7 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
     curl -X PUT -H "Content-Type:application/json" -d '{"name":"Introduction to Computer Science Updated","credits":4,"type":"ELECTIVE","professorId":"{{professorId}}","tutorIds":[],"programIds":[]}' http://localhost:8083/api/courses/{{courseId}}
     ```
 
-#### Delete Course
+##### Delete Course
 
 - **Method**: `DELETE`
 - **URL**: `http://localhost:8083/api/courses/{{courseId}}`
@@ -440,7 +437,7 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
     curl -X DELETE -H "Content-Type:application/json" http://localhost:8083/api/courses/{{courseId}}
     ```
 
-#### Get Tutors for Course
+##### Get Tutors for Course
 
 - **Method**: `GET`
 - **URL**: `http://localhost:8083/api/courses/{{courseId}}/tutors`
@@ -477,7 +474,7 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
     curl -X GET -H "Content-Type:application/json" http://localhost:8083/api/courses/{{courseId}}/tutors
     ```
 
-#### Assign Tutor to Course
+##### Assign Tutor to Course
 
 - **Method**: `POST`
 - **URL**: `http://localhost:8083/api/courses/{{courseId}}/tutors/{{tutorId}}`
@@ -497,7 +494,7 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
     curl -X POST -H "Content-Type:application/json" http://localhost:8083/api/courses/{{courseId}}/tutors/{{tutorId}}
     ```
 
-#### Remove Tutor from Course
+##### Remove Tutor from Course
 
 - **Method**: `DELETE`
 - **URL**: `http://localhost:8083/api/courses/{{courseId}}/tutors/{{tutorId}}`
@@ -517,7 +514,7 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
     curl -X DELETE -H "Content-Type:application/json" http://localhost:8083/api/courses/{{courseId}}/tutors/{{tutorId}}
     ```
 
-#### Add Timetable to Course
+##### Add Timetable to Course
 
 - **Method**: `POST`
 - **URL**: `http://localhost:8083/api/courses/{{courseId}}/timetables`
@@ -557,7 +554,7 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
     curl -X POST -H "Content-Type:application/json" -d '{"dayOfWeek":"MONDAY","startTime":"09:00","endTime":"10:30","location":"Room 101"}' http://localhost:8083/api/courses/{{courseId}}/timetables
     ```
 
-#### Remove Timetable from Course
+##### Remove Timetable from Course
 
 - **Method**: `DELETE`
 - **URL**: `http://localhost:8083/api/courses/{{courseId}}/timetables/{{timetableId}}`
@@ -577,9 +574,9 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
     curl -X DELETE -H "Content-Type:application/json" http://localhost:8083/api/courses/{{courseId}}/timetables/{{timetableId}}
     ```
 
-#### Progfessor
+#### Professor
 
-#### Create Professor
+##### Create Professor
 
 - **Method**: `POST`
 - **URL**: `http://localhost:8083/api/professors`
@@ -614,7 +611,7 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
     curl -X POST -H "Content-Type:application/json" -d '{"name":"Dr. Jane Smith","department":"Computer Science"}' http://localhost:8083/api/professors
     ```
 
-#### Get Professor by ID
+##### Get Professor by ID
 
 - **Method**: `GET`
 - **URL**: `http://localhost:8083/api/professors/{{professorId}}`
@@ -642,7 +639,7 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
     curl -X GET -H "Content-Type:application/json" http://localhost:8083/api/professors/{{professorId}}
     ```
 
-#### Get All Professors
+##### Get All Professors
 
 - **Method**: `GET`
 - **URL**: `http://localhost:8083/api/professors`
@@ -677,7 +674,7 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
     curl -X GET -H "Content-Type:application/json" http://localhost:8083/api/professors
     ```
 
-#### Update Professor
+##### Update Professor
 
 - **Method**: `PUT`
 - **URL**: `http://localhost:8083/api/professors/{{professorId}}`
@@ -712,7 +709,7 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
     curl -X PUT -H "Content-Type:application/json" -d '{"name":"Dr. Jane Smith Updated","department":"Electrical Engineering"}' http://localhost:8083/api/professors/{{professorId}}
     ```
 
-#### Delete Professor
+##### Delete Professor
 
 - **Method**: `DELETE`
 - **URL**: `http://localhost:8083/api/professors/{{professorId}}`
@@ -1318,22 +1315,6 @@ The University Course Management API allows you to perform CRUD (Create, Read, U
     ```bash
     curl -X DELETE -H "Content-Type:application/json" http://localhost:8083/api/tutors/{{tutorId}}/courses/{{courseId}}
     ```
-
-### Running the Collection
-
-To run the Postman collection, you can use the following commands:
-
-#### Windows
-
-```shell
-newman run University_Course_Management.postman_collection.json --env-var "studentServiceBaseUrl=http://localhost:8081" --env-var "courseServiceBaseUrl=http://localhost:8083" --env-var "enrollmentServiceBaseUrl=http://localhost:8082"
-```
-
-#### macOS/Linux
-
-```bash
-newman run University_Course_Management.postman_collection.json --env-var "studentServiceBaseUrl=http://localhost:8081" --env-var "courseServiceBaseUrl=http://localhost:8083" --env-var "enrollmentServiceBaseUrl=http://localhost:8082"
-```
 
 ### Enrollment Service
 
