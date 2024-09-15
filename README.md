@@ -130,6 +130,17 @@ API endpoints for each service:
 
 Please read [Detail API Documentation](Detail_APIs_Documentation.md) for details API requests and responese.
 
+## Testing with Postman
+
+To test the APIs using Postman, you can import the provided Postman collection and environment files:
+
+1. Navigate to the `postman` folder in the repository.
+2. Import the following files into Postman:
+   - `University Course Management Environment.postman_environment.json`
+   - `University-Management-Api-Collection.json`
+
+These files contain pre-configured requests for all the APIs in the system, along with the necessary environment variables. After importing, you can easily send requests to test the functionality of each service.
+
 ## License
 
 This project is licensed under the MIT License - see the LICENSE.md file for details.
